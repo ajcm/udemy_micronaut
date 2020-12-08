@@ -1,3 +1,13 @@
 micronaut:
   application:
-    name: demo
+    name: micronaut
+  server:
+    port: 8081
+
+myservice:
+  controller:
+    path: "/hello"
+    message: "Hello!"
+
+test:
+  value: "test value"

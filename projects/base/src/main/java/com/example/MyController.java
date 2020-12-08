@@ -3,13 +3,17 @@ package com.example;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 
-@Controller
+import javax.inject.Inject;
+
+@Controller("${myservice.controller.path:/hello}")
 public class MyController {
 
-    @Get
-    public String index(){
-        return "Hello";
+    @Inject
+    MyService myService;
 
+    @Get("/")
+    public String index(){
+        return myService.getMessage();
     }
 
 }

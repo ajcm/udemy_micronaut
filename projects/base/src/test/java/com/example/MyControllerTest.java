@@ -1,5 +1,6 @@
 package com.example;
 
+import io.micronaut.context.annotation.Value;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.runtime.EmbeddedApplication;
@@ -18,6 +19,9 @@ public class MyControllerTest {
     @Inject @Client("/")
     RxHttpClient client;
 
+    @Value("${myservice.controller.message}")
+    String message;
+
 
     @Test
     void testItWorks() {
@@ -26,8 +30,8 @@ public class MyControllerTest {
 
     @Test
     void testHelloResponse(){
-        String result = client.toBlocking().retrieve("/");
-        Assertions.assertEquals("Hello",result);
+        String result = client.toBlocking().retrieve("/hello");
+        Assertions.assertEquals(message,result);
 
     }
 
