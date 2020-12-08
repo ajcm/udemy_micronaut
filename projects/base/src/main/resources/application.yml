@@ -11,3 +11,7 @@ myservice:
 
 test:
   value: "test value"
+
+myconfig:
+    en: "Helloooo"
+    de: "Deutchxxxx"

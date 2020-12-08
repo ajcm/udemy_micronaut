@@ -20,6 +20,7 @@
     <micronaut.version>2.2.1</micronaut.version>
     <exec.mainClass>com.example.Application</exec.mainClass>
     <micronaut.runtime>netty</micronaut.runtime>
+    <lombok.version>1.18.12</lombok.version>
   </properties>
 
   <repositories>
@@ -64,6 +65,13 @@
       <artifactId>javax.annotation-api</artifactId>
       <scope>compile</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
@@ -94,17 +102,99 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <detail>true</detail>
+          <includes>
+            <include>%regex[.*]</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven-failsafe-plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <!-- Uncomment to enable incremental compilation -->
           <!-- <useIncrementalCompilation>false</useIncrementalCompilation> -->
-          <annotationProcessorPaths combine.children="append">
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+            <path>
+              <groupId>io.micronaut</groupId>
+              <artifactId>micronaut-inject-java</artifactId>
+              <version>${micronaut.version}</version>
+            </path>
+            <path>
+              <groupId>io.micronaut.data</groupId>
+              <artifactId>micronaut-data-processor</artifactId>
+              <version>${micronaut.data.version}</version>
+            </path>
+            <path>
+              <groupId>io.micronaut</groupId>
+              <artifactId>micronaut-validation</artifactId>
+              <version>${micronaut.version}</version>
+            </path>
+            <path>
+              <groupId>io.micronaut.openapi</groupId>
+              <artifactId>micronaut-openapi</artifactId>
+              <version>${micronaut.openapi.version}</version>
+            </path>
           </annotationProcessorPaths>
+          <fork>true</fork>
           <compilerArgs>
+            <arg>-J-Dmicronaut.openapi.views.spec=redoc.enabled=true,rapidoc.enabled=true,swagger-ui.enabled=true,swagger-ui.theme=flattop</arg>
             <arg>-Amicronaut.processing.group=com.example</arg>
             <arg>-Amicronaut.processing.module=demo</arg>
           </compilerArgs>
         </configuration>
+        <executions>
+          <execution>
+            <id>test-compile</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>org.projectlombok</groupId>
+                  <artifactId>lombok</artifactId>
+                  <version>${lombok.version}</version>
+                </path>
+                <path>
+                  <groupId>io.micronaut</groupId>
+                  <artifactId>micronaut-inject-java</artifactId>
+                  <version>${micronaut.version}</version>
+                </path>
+                <path>
+                  <groupId>io.micronaut</groupId>
+                  <artifactId>micronaut-validation</artifactId>
+                  <version>${micronaut.version}</version>
+                </path>
+              </annotationProcessorPaths>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

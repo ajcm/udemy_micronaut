@@ -16,6 +16,9 @@ public class MyControllerTest {
     @Inject
     EmbeddedApplication<?> application;
 
+    @Inject
+    MyConfig myConfig;
+
     @Inject @Client("/")
     RxHttpClient client;
 
@@ -32,6 +35,12 @@ public class MyControllerTest {
     void testHelloResponse(){
         String result = client.toBlocking().retrieve("/hello");
         Assertions.assertEquals(message,result);
+    }
+
+    @Test
+    void testHelloResponseEn(){
+        String result = client.toBlocking().retrieve("/hello/en");
+        Assertions.assertEquals(myConfig.getEn(),result);
 
     }
 
